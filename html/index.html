@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>go crud</title>
+</head>
+<body>
+    <h1>一覧</h1>
+    <form method="post" action="/new">
+        <p>name <input type="text" name="name" size="30" placeholder="input your name"></p>
+        <p>age <input type="number" name="age"></p>
+        <p><input type="submit" value="Send"></p>
+    </form>
+    {{ range .people }}
+    <li>{{.Name}}さん{{.Age}}才</li>
+    {{ end }}
+</body>
+</html>
