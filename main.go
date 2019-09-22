@@ -1,60 +1,107 @@
 package main
 
 import (
+	_ "net/http"
+	"strconv"
 
-        "strconv"
-        "github.com/gin-gonic/gin"
-        "github.com/jinzhu/gorm"
-        _ "github.com/mattn/go-sqlite3"
-        _ "net/http"
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
+	_ "github.com/mattn/go-sqlite3"
 )
 
+// Person struct
 type Person struct {
-        gorm.Model
-        Name string
-        Age  int
+	gorm.Model
+	Name string
+	Age  int
 }
 
-func db_init() {
-        db, err := gorm.Open("sqlite3", "test.sqlite3")
-        if err != nil {
-                panic("failed to connect database\n")
-        }
+func dbInit() {
+	db, err := gorm.Open("sqlite3", "test.sqlite3")
+	if err != nil {
+		panic("failed to connect database\n")
+	}
 
-        db.AutoMigrate(&Person{})
+	db.AutoMigrate(&Person{})
 }
 func create(name string, age int) {
-        db, err := gorm.Open("sqlite3", "test.sqlite3")
-        if err != nil {
-                panic("failed to connect database\n")
-        }
-        db.Create(&Person{Name: name, Age: age})
+	db, err := gorm.Open("sqlite3", "test.sqlite3")
+	if err != nil {
+		panic("failed to connect database\n")
+	}
+	db.Create(&Person{Name: name, Age: age})
 }
-func get_all() []Person {
-        db, err := gorm.Open("sqlite3", "test.sqlite3")
-        if err != nil {
-                panic("failed to connect database\n")
-        }
-        var people []Person
-        db.Find(&people)
-        return people
 
+func delete(id int) {
+	db, err := gorm.Open("sqlite3", "test.sqlite3")
+	if err != nil {
+		panic("failed to connect database\n")
+	}
+	var person Person
+	db.First(&person, id)
+	db.Delete(&person)
+	db.Close()
+}
+
+func getAll() []Person {
+	db, err := gorm.Open("sqlite3", "test.sqlite3")
+	if err != nil {
+		panic("failed to connect database\n")
+	}
+	var people []Person
+	db.Find(&people)
+	db.Close()
+	return people
+}
+
+// DbGetOne get a data
+func DbGetOne(id int) Person {
+	db, err := gorm.Open("sqlite3", "test.sqlite3")
+	if err != nil {
+		panic("failed to connect database(DbGetOne)\n")
+	}
+	var person Person
+	db.First(&person, id)
+	db.Close()
+	return person
 }
 func main() {
-        r := gin.Default()
-        r.LoadHTMLGlob("html/*")
-        db_init()
-        r.GET("/", func(c *gin.Context) {
-                people := get_all()
-                c.HTML(200, "index.html", gin.H{
-                        "people": people,
-                })
-        })
-        r.POST("/new", func(c *gin.Context) {
-                name := c.PostForm("name")
-                age, _ := strconv.Atoi(c.PostForm("age"))
-                create(name, age)
-                c.Redirect(302, "/")
-        })
-        r.Run()
+	r := gin.Default()
+	r.LoadHTMLGlob("html/*")
+	dbInit()
+
+	r.GET("/", func(c *gin.Context) {
+		people := getAll()
+		c.HTML(200, "index.html", gin.H{
+			"people": people,
+		})
+	})
+
+	r.GET("/delete_check/:id", func(c *gin.Context) {
+		n := c.Param("id")
+		id, err := strconv.Atoi(n)
+		if err != nil {
+			panic("ERROR")
+		}
+		person := DbGetOne(id)
+		c.HTML(200, "delete.html", gin.H{"person": person})
+	})
+
+	r.POST("/new", func(c *gin.Context) {
+		name := c.PostForm("name")
+		age, _ := strconv.Atoi(c.PostForm("age"))
+		create(name, age)
+		c.Redirect(302, "/")
+	})
+
+	// r.POST("/delete/:id", func(c *gin.Context) {
+	// 	n := c.Param("id")
+	// 	id, err := strconv.Atoi(n)
+	// 	if err != nil {
+	// 		panic("ERROR")
+	// 	}
+	// 	delete(id)
+	// 	c.Redirect(302, "/")
+	// })
+	r.Run()
 }
