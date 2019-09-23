@@ -94,14 +94,14 @@ func main() {
 		c.Redirect(302, "/")
 	})
 
-	// r.POST("/delete/:id", func(c *gin.Context) {
-	// 	n := c.Param("id")
-	// 	id, err := strconv.Atoi(n)
-	// 	if err != nil {
-	// 		panic("ERROR")
-	// 	}
-	// 	delete(id)
-	// 	c.Redirect(302, "/")
-	// })
+	r.POST("/delete/:id", func(c *gin.Context) {
+		n := c.Param("id")
+		id, err := strconv.Atoi(n)
+		if err != nil {
+			panic("ERROR")
+		}
+		delete(id)
+		c.Redirect(302, "/")
+	})
 	r.Run()
 }
