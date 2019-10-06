@@ -13,5 +13,10 @@
         <li>Name:{{.person.Name}}</li>
         <li>Age: {{.person.Age}}</li>
     </ul>
+
+    <form method="POST" action="/delete/{{.person.ID}}">
+        <p><input type="submit" value="削除"></p>
+        <p><a href="/">戻る</a></p>
+    </form>
 </body>
 </html>
