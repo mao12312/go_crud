@@ -12,6 +12,7 @@ import (
 // Person struct
 type Person struct {
 	gorm.Model
+	ID int
 	Name string
 	Age  int
 }
@@ -40,6 +41,19 @@ func delete(id int) {
 	var person Person
 	db.First(&person, id)
 	db.Delete(&person)
+	db.Close()
+}
+
+func update(id int, name string, age int) {
+	db, err := gorm.Open("sqlite3", "test.sqlite3")
+	if err != nil {
+		panic("failed to connect database\n")
+	}
+	var person Person
+	db.First(&person, id)
+	person.Name = name
+	person.Age  = age
+	db.Save(&person)
 	db.Close()
 }
 
@@ -103,5 +117,17 @@ func main() {
 		delete(id)
 		c.Redirect(302, "/")
 	})
+
+	r.GET("/edit/:id", func(c *gin.Context){
+		n := c.Param("id")
+		id, err := strconv.Atoi(n)
+		if err != nil{
+			panic("ERROR")
+		}
+		person := DbGetOne(id)
+		c.HTML(200, "edit.html", gin.H{"person":person})
+
+	})
+
 	r.Run()
 }

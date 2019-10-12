@@ -18,6 +18,7 @@
     {{ range .people }}
     <li>{{.Name}}さん{{.Age}}才
         <a href="/delete_check/{{.ID}}">削除</a>
+        <a href="/edit/{{.ID}}">編集</a>
     </li>
     {{ end }}
     
