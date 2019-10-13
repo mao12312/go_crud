@@ -12,7 +12,6 @@ import (
 // Person struct
 type Person struct {
 	gorm.Model
-	ID int
 	Name string
 	Age  int
 }
@@ -44,7 +43,7 @@ func delete(id int) {
 	db.Close()
 }
 
-func update(id int, name string, age int) {
+func update(id int, name string) {
 	db, err := gorm.Open("sqlite3", "test.sqlite3")
 	if err != nil {
 		panic("failed to connect database\n")
@@ -52,7 +51,7 @@ func update(id int, name string, age int) {
 	var person Person
 	db.First(&person, id)
 	person.Name = name
-	person.Age  = age
+	// person.Age  = age
 	db.Save(&person)
 	db.Close()
 }
@@ -129,13 +128,14 @@ func main() {
 
 	})
 
-	r.POST("update/:id" func(c *gin.Context){
+	r.POST("update/:id", func(c *gin.Context){
 		n := c.Param("id")
 		id, err := strconv.Atoi(n)
 		if err != nil{
 			panic("ERROR")
 		}
 		name := c.PostForm("name")
+		update(id, name,)
 		c.Redirect(302, "/")
 	})
 
