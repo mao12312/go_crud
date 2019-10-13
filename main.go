@@ -129,5 +129,15 @@ func main() {
 
 	})
 
+	r.POST("update/:id" func(c *gin.Context){
+		n := c.Param("id")
+		id, err := strconv.Atoi(n)
+		if err != nil{
+			panic("ERROR")
+		}
+		name := c.PostForm("name")
+		c.Redirect(302, "/")
+	})
+
 	r.Run()
 }
