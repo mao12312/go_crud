@@ -43,15 +43,16 @@ func delete(id int) {
 	db.Close()
 }
 
-func update(id int, name string) {
+func update(id int, name string, age int) {
 	db, err := gorm.Open("sqlite3", "test.sqlite3")
 	if err != nil {
 		panic("failed to connect database\n")
 	}
 	var person Person
+
 	db.First(&person, id)
 	person.Name = name
-	// person.Age  = age
+	person.Age = age
 	db.Save(&person)
 	db.Close()
 }
@@ -135,7 +136,12 @@ func main() {
 			panic("ERROR")
 		}
 		name := c.PostForm("name")
-		update(id, name,)
+		a := c.PostForm("age")
+		age, errAge := strconv.Atoi(a)
+		if errAge != nil {
+			panic(errAge)
+		}
+		update(id, name, age)
 		c.Redirect(302, "/")
 	})
 

@@ -12,6 +12,7 @@
     <p>{{.person.Age}}</p>
     <form method="POST" action="/update/{{.person.ID}}">
         <p><input type="text" name="name" value="{{.person.Name}}"></p>
+        <p><input type="number" name="age" value="{{.person.Age}}"></p>
         <input type="submit">
     </form>
 </body>
