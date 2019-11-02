@@ -12,8 +12,8 @@ import (
 // Person struct
 type Person struct {
 	gorm.Model
-	Name string
-	Age  int
+	Name string `validate:"required"`
+	Age  int `validate:"required"`
 }
 
 func dbInit() {
@@ -91,6 +91,8 @@ func main() {
 		})
 	})
 
+	// validate := validator.New()
+	// errors := validate.Struct(user)
 	r.GET("/delete_check/:id", func(c *gin.Context) {
 		n := c.Param("id")
 		id, err := strconv.Atoi(n)
