@@ -146,6 +146,5 @@ func main() {
 		update(id, name, age)
 		c.Redirect(302, "/")
 	})
-
 	r.Run()
 }
