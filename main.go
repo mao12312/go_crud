@@ -3,6 +3,7 @@ package main
 import (
 	_ "net/http"
 	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/mattn/go-sqlite3"
@@ -12,7 +13,7 @@ import (
 type Person struct {
 	gorm.Model
 	Name string `validate:"required"`
-	Age  int `validate:"required"`
+	Age  int    `validate:"required"`
 }
 
 func dbInit() {
@@ -119,21 +120,21 @@ func main() {
 		c.Redirect(302, "/")
 	})
 
-	r.GET("/edit/:id", func(c *gin.Context){
+	r.GET("/edit/:id", func(c *gin.Context) {
 		n := c.Param("id")
 		id, err := strconv.Atoi(n)
-		if err != nil{
+		if err != nil {
 			panic("ERROR")
 		}
 		person := DbGetOne(id)
-		c.HTML(200, "edit.html", gin.H{"person":person})
+		c.HTML(200, "edit.html", gin.H{"person": person})
 
 	})
 
-	r.POST("update/:id", func(c *gin.Context){
+	r.POST("update/:id", func(c *gin.Context) {
 		n := c.Param("id")
 		id, err := strconv.Atoi(n)
-		if err != nil{
+		if err != nil {
 			panic("ERROR")
 		}
 		name := c.PostForm("name")
